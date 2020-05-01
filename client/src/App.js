@@ -11,10 +11,12 @@ const App = () => {
   const [movieList, setMovieList] = useState([]);
   const [loading, setLoading] = useState(false);
   const getMovieList = () => {
+    setTimeout(()=>{
     axios
       .get("http://localhost:5000/api/movies")
       .then(res => setMovieList(res.data))
       .catch(err => console.log(err.response));
+    },1500)
   };
 
   const addToSavedList = movie => {
@@ -28,6 +30,7 @@ const App = () => {
   
 
   useEffect(() => {
+    console.log("APP.JS CALL")
     getMovieList();
   }, [loading]);
   
@@ -35,6 +38,12 @@ const App = () => {
   return (
     <>
       <SavedList list={savedList} />
+
+      <Route path ="/update-movie/:id"
+        render ={props =>(
+        <UpdateMovie {...props} movies = {movieList} updateItems = {setMovieList} loading = {loading} updateLoading = {setLoading}/>
+        )}
+        />
 
       <Route exact path="/"
         render = {props=>(
@@ -47,11 +56,7 @@ const App = () => {
         <Movie {...props} addToSavedList={addToSavedList} setLoading = {setLoading} loading = {loading} />
         )}
         />
-      <Route path ="/update-movie/:id"
-        render ={props =>(
-        <UpdateMovie {...props} movies = {movieList} updateItems = {setMovieList} loading = {loading} updateLoading = {setLoading}/>
-        )}
-        />
+      
     </>
   );
 };

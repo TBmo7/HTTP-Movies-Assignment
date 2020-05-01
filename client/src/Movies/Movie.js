@@ -11,6 +11,7 @@ function Movie({ addToSavedList }) {
   const history =createBrowserHistory()
 
   const fetchMovie = (id) => {
+    
     axios
       .get(`http://localhost:5000/api/movies/${id}`)
       .then((res) => setMovie(res.data))
@@ -33,14 +34,16 @@ const deleteMovie = (id) =>{
     .delete(`http://localhost:5000/api/movies/${id}`)
     .then(res=>{
       console.log("DELETE SUCCESS", res)
-      history.push("/")
+      
     })
     .catch(err=>{
       console.log("DELETE ERROR", err)
     })
+    history.push("/")
 }
 
   useEffect(() => {
+    console.log("MOVIE.JS CALL")
     fetchMovie(params.id);
   }, [params.id]);
 

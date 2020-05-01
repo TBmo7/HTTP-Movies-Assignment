@@ -1,9 +1,27 @@
 import React, {useState,useEffect} from "react"
-import {Link, useParams, Redirect} from 'react-router-dom'
+import { useParams} from 'react-router-dom'
 import axios from "axios"
 
-function UpdateMovie(props) {
+const UpdateMovie = props => {
     const params = useParams()
+    // let counter = 0;
+    const upDate = props.movies
+    useEffect(() => {
+        // fetchMovie(params.id);
+        // do {
+        //     counter++
+        // }
+        // while(counter<10000)
+        console.log("UPDATEMOVIE.JS IN COMPONENT MOVIE", movie)
+        console.log("UPDATEMOVIE.JS CALL", props.movies)
+        const selectedMovie = props.movies.find(movie=>{
+            return `${movie.id}` === props.match.params.id
+        })
+        if(selectedMovie){
+            setMovie(selectedMovie)
+        }
+      }, [props.movies, props.match.params.id,upDate   ]);
+      //props.movies, props.match.params.id
   
     const [movie, setMovie] = useState({
         director:"",
@@ -29,21 +47,42 @@ function UpdateMovie(props) {
         })
     }
 
-    const handleSubmit = (e) =>{
-        e.preventDefault()
-        // updateData(params,movie)
-        axios
-        .put(`http://localhost:5000/api/movies/${movie.id}`,movie)
+    const submitWithSplit = input => {
+         axios
+        .put(`http://localhost:5000/api/movies/${movie.id}`,
+        {...input,
+        id:movie.id,
+    stars:input.stars.split(',')})
         .then(res=>{
                     console.log("SUCCESSFUL UPDATE", res)
                     props.updateItems(res.data)
-                    props.history.push("/")
+                    
                     // props.updateLoading(true)   
                 })
                 .catch(err=>
                     console.log("Error Updating element", err))
+                    props.history.push("/")
+
+    }
+
+    const handleSubmit = (e) =>{
+        e.preventDefault()
+        submitWithSplit(movie)
+        props.updateLoading(true)
+        // updateData(params,movie)
+        // axios
+        // .put(`http://localhost:5000/api/movies/${movie.id}`,movie)
+        // .then(res=>{
+        //             console.log("SUCCESSFUL UPDATE", res)
+        //             props.updateItems(res.data)
+        //             props.history.push("/")
+        //             // props.updateLoading(true)   
+        //         })
+        //         .catch(err=>
+                    // console.log("Error Updating element", err))
+       
                
-        
+                
     }
 
     // const updateData = (id,movieData)=>{
@@ -57,16 +96,6 @@ function UpdateMovie(props) {
     //         console.log("Error Updating element", err))
     // }
 
-      useEffect(() => {
-        // fetchMovie(params.id);
-        const selectedMovie = props.movies.find(movie=>{
-            return `${movie.id}` === props.match.params.id
-        })
-        if(selectedMovie){
-            setMovie(selectedMovie)
-        }
-      }, [props.movies, props.match.params.id   ]);
-      //props.movies, props.match.params.id
       
     console.log("UPDATE MOVIE information", props.movies)
     return(
